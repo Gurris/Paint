@@ -313,10 +313,6 @@ public class mainViewController {
             paper.addShape(s);
         }
 
-
-
-
-
     }
 
     public void saveFile(){
