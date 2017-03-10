@@ -2,6 +2,7 @@
  * Created by Gurris on 2017-02-23.
  */
 
+import Model.Command.CommandManager;
 import Model.Observers.PaperObserver;
 import Model.Observers.menuObserver;
 import Model.Observers.shapeObserver;
@@ -25,7 +26,7 @@ public class Main extends Application {
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Paint 2.0");
-        primaryStage.setScene(new Scene(root, 700, 600));
+        primaryStage.setScene(new Scene(root, 750, 600));
 
         // menu items
         Prototype prototype = new Prototype();
@@ -34,12 +35,16 @@ public class Main extends Application {
         Paper p = new Paper();
         InterfacePaper paper = p;
 
+        //Command manager
+        CommandManager cmdManager = new CommandManager();
+        controller.setCmdManager(cmdManager);
+
         // Observers
         new PaperObserver(p, controller.getCanvas());   // Calls draw method on change
-        new menuObserver(prototype, controller);        // Calls optionsMenu on change
         new shapeObserver(p, controller);               // Calls shapeMenu in controller on change
+        new menuObserver(prototype, controller);        // Calls optionsMenu on change
 
-        prototype.loadPrototype();                      // here is where options menu can be changed. Might not need a
+        prototype.loadPrototype();                      // here is where options menu can be changed. Might not need to be a
                                                         // observer. But... Meh...
 
         controller.setPaper(paper);

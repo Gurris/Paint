@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public interface InterfacePaper {
     void addShape(Shape shape);
     void removeShape(Shape shape);
-    void editedShape(Shape shape);
+    void editedShape(Shape shape, Shape newShape);
     void drawShapes(GraphicsContext gc);
     ArrayList<Shape> getShapes();
     void clearPaper();

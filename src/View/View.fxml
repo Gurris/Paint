@@ -19,7 +19,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" text="Undo" onAction="#Undo"/>
+                <MenuItem mnemonicParsing="false" text="Redo" onAction="#Redo"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -35,9 +36,9 @@
       </VBox>
    </left>
    <center>
-      <Canvas fx:id="canvas" height="585" onMouseDragged="#shapeDrawingPreview" onMousePressed="#shapeDrawingStart" onMouseReleased="#shapeDrawingEnd" width="510" BorderPane.alignment="CENTER" />
+      <Canvas fx:id="canvas" width="510" height="585" onMouseDragged="#shapeDrawingPreview" onMousePressed="#shapeDrawingStart" onMouseReleased="#shapeDrawingEnd" BorderPane.alignment="CENTER" />
    </center>
    <right>
-      <VBox fx:id="shapeMenu" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+      <VBox fx:id="shapeMenu" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER" />
    </right>
 </BorderPane>

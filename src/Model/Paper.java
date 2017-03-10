@@ -12,11 +12,9 @@ import java.util.List;
 /**
  * Created by Gurris on 2017-03-02.
  */
-public class Paper implements InterfacePaper, Serializable{
+public class Paper implements InterfacePaper{
 
     ArrayList<Shape> shapes = new ArrayList<>();
-    ArrayList<Shape> prototypes = new ArrayList<>();
-
     private List<Observer> observers = new ArrayList<Observer>();
 
     @Override
@@ -34,8 +32,10 @@ public class Paper implements InterfacePaper, Serializable{
     }
 
     @Override
-    public void editedShape(Shape shape) {
-        System.out.println("Editing: " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
+    public void editedShape(Shape old, Shape newS) {
+        //System.out.println("Editing: " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
+        this.removeShape(old);
+        this.addShape(newS);
         notifyObserevers();
     }
 

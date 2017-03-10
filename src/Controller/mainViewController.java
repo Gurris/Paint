@@ -2,6 +2,7 @@ package Controller;
 
 
 import Model.*;
+import Model.Command.*;
 import Model.Shapes.Prototype;
 import Model.Shapes.Shape;
 import javafx.event.ActionEvent;
@@ -49,6 +50,17 @@ public class mainViewController {
 
     private Shape selectedShape;
 
+    private CommandManager cmdManager;
+
+
+    public CommandManager getCmdManager() {
+        return cmdManager;
+    }
+
+    public void setCmdManager(CommandManager cmdManager) {
+        this.cmdManager = cmdManager;
+    }
+
     public void setPaper(InterfacePaper paper){
         this.paper = paper;
     }
@@ -58,7 +70,7 @@ public class mainViewController {
     }
 
     public void shapeDrawingStart(MouseEvent mouseEvent){
-        if(selectedType == null) // TODO: make better. Might hava a tool to select currently placed shapes
+        if(selectedType == null)
             return;
         this.selectedShape_X1 = mouseEvent.getX();
         this.selectedShape_Y1 = mouseEvent.getY();
@@ -74,10 +86,10 @@ public class mainViewController {
             if(selectedShape_X1 == selectedShape_X2 && selectedShape_Y1 == selectedShape_Y2) // to avoid invisible objects
                 return;
             paper.addShape(tmp);
+            cmdManager.addCommand(new AddCmd(paper, tmp));
             selectedShape = null;
         }else {
             System.out.println("No shape selected");
-            //TODO: Make a message appear on screen
         }
     }
 
@@ -90,6 +102,16 @@ public class mainViewController {
             paper.drawShapes(canvas.getGraphicsContext2D());
             tmp.draw(canvas.getGraphicsContext2D());
         }
+    }
+
+    public void Undo(){
+        System.out.println("Undo");
+        cmdManager.executeUndo();
+    }
+
+    public void Redo(){
+        System.out.println("Redo");
+        cmdManager.executeRedo();
     }
 
     private Shape applyValues(Shape shape){
@@ -139,6 +161,7 @@ public class mainViewController {
                 @Override
                 public void handle(ActionEvent event) {
                     paper.removeShape(s);
+                    cmdManager.addCommand(new DeleteCmd(paper, s));
                 }
             });
         }
@@ -198,12 +221,13 @@ public class mainViewController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Color picker value: " + colorPicker.getValue());
+                Shape savedShape = selectedShape;
                 selectedColor = colorPicker.getValue();
                 if(selectedShape != null){
                     selectedShape.setColor(colorPicker.getValue());
-                    paper.editedShape(selectedShape);
+                    paper.editedShape(savedShape, selectedShape);
+                    cmdManager.addCommand(new EditeCmd(paper, savedShape, selectedShape));
                 }
-
             }
         });
 
@@ -228,7 +252,7 @@ public class mainViewController {
                 selectedLineWidth = Integer.parseInt(lineWidthField.getText());
                 if(selectedShape != null){
                     selectedShape.setLineWidth(Integer.parseInt(lineWidthField.getText()));
-                    paper.editedShape(selectedShape);
+                    //paper.editedShape(selectedShape);
                 }
             }
         });
@@ -244,7 +268,7 @@ public class mainViewController {
                 selectedFillValue = cBox.isSelected();
                 if(selectedShape != null){
                     selectedShape.setFill(selectedFillValue);
-                    paper.editedShape(selectedShape);
+                    //paper.editedShape(selectedShape);
                 }
             }
         });
