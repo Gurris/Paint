@@ -19,23 +19,33 @@ public class Paper implements InterfacePaper{
 
     @Override
     public void addShape(Shape shape) {
-        System.out.println("Adding: " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
+        System.out.println("Adding: " + shape.getIdetifyer() + " " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
         shapes.add(shape);
         notifyObserevers();
     }
 
     @Override
     public void removeShape(Shape shape) {
-        System.out.println("Removing: " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
-        shapes.remove(shape);
+        System.out.println("Removing: " + shape.getIdetifyer() + " " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
+        for(Shape s : shapes){
+            if(s.getIdetifyer() == shape.getIdetifyer()){
+                System.out.println("Removing!");
+                shapes.remove(s);
+                break;
+            }
+        }
         notifyObserevers();
     }
 
     @Override
-    public void editedShape(Shape old, Shape newS) {
+    public void editedShape(Shape referemceShape, Shape savedShape) {
         //System.out.println("Editing: " + shape.getType() + " at: x1: " + shape.getX1() + " y1: " + shape.getY1() + " x2: " + shape.getX2() + " y2: " + shape.getY2());
-        this.removeShape(old);
-        this.addShape(newS);
+        for(int i=0; i<shapes.size(); i++){
+            if(shapes.get(i).getIdetifyer() == savedShape.getIdetifyer()){
+                this.removeShape(shapes.get(i));
+                this.addShape(savedShape);
+            }
+        }
         notifyObserevers();
     }
 

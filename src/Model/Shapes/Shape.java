@@ -19,6 +19,7 @@ public abstract class Shape implements Cloneable, Serializable{
     private double lineWidth;
     private boolean fill;
     private String serilizeColor;
+    private int idetifyer;
 
     public void draw(GraphicsContext g2){
         g2.setStroke(getColor());
@@ -29,6 +30,13 @@ public abstract class Shape implements Cloneable, Serializable{
 
     abstract protected void drawShape(GraphicsContext g);
 
+    public int getIdetifyer() {
+        return idetifyer;
+    }
+
+    public void setIdetifyer(int idetifyer) {
+        this.idetifyer = idetifyer;
+    }
 
     public String getId() {
         return id;

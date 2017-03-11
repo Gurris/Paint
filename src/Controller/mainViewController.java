@@ -85,8 +85,10 @@ public class mainViewController {
             tmp = applyValues(tmp);
             if(selectedShape_X1 == selectedShape_X2 && selectedShape_Y1 == selectedShape_Y2) // to avoid invisible objects
                 return;
+            tmp.setIdetifyer(paper.getShapes().size());
+            Shape savedShape = (Shape) tmp.clone();
             paper.addShape(tmp);
-            cmdManager.addCommand(new AddCmd(paper, tmp));
+            cmdManager.addCommand(new AddCmd(paper, savedShape));
             selectedShape = null;
         }else {
             System.out.println("No shape selected");
@@ -161,7 +163,8 @@ public class mainViewController {
                 @Override
                 public void handle(ActionEvent event) {
                     paper.removeShape(s);
-                    cmdManager.addCommand(new DeleteCmd(paper, s));
+                    Shape savedShape = (Shape) s.clone();
+                    cmdManager.addCommand(new DeleteCmd(paper, savedShape));
                 }
             });
         }
@@ -221,12 +224,16 @@ public class mainViewController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Color picker value: " + colorPicker.getValue());
-                Shape savedShape = selectedShape;
+
+
                 selectedColor = colorPicker.getValue();
                 if(selectedShape != null){
+                    Object savedShape = selectedShape.clone();
                     selectedShape.setColor(colorPicker.getValue());
-                    paper.editedShape(savedShape, selectedShape);
-                    cmdManager.addCommand(new EditeCmd(paper, savedShape, selectedShape));
+                    Object referenceShape = selectedShape.clone();
+                    cmdManager.addCommand(new EditCmd(paper, (Shape) referenceShape, (Shape) savedShape));
+                    //paper.editedShape(savedShape, selectedShape);
+                    paper.drawShapes(canvas.getGraphicsContext2D());
                 }
             }
         });
@@ -244,15 +251,16 @@ public class mainViewController {
         //Add box to VBox
         vBox.getChildren().add(LineOption);
 
-        // TODO: förbättra då man inte vill trycka på enter för att värdet ska ändras
         lineWidthField.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 //TODO: MAKE SURE IT IS A NUMBER!!!
                 selectedLineWidth = Integer.parseInt(lineWidthField.getText());
                 if(selectedShape != null){
+                    Object savedShape = selectedShape.clone();
                     selectedShape.setLineWidth(Integer.parseInt(lineWidthField.getText()));
-                    //paper.editedShape(selectedShape);
+                    cmdManager.addCommand(new EditCmd(paper, selectedShape, (Shape) savedShape));
+                    paper.drawShapes(canvas.getGraphicsContext2D());
                 }
             }
         });
@@ -267,8 +275,11 @@ public class mainViewController {
             public void handle(ActionEvent event) {
                 selectedFillValue = cBox.isSelected();
                 if(selectedShape != null){
-                    selectedShape.setFill(selectedFillValue);
                     //paper.editedShape(selectedShape);
+                    Object savedShape = selectedShape.clone();
+                    selectedShape.setFill(selectedFillValue);
+                    cmdManager.addCommand(new EditCmd(paper, selectedShape, (Shape) savedShape));
+                    paper.drawShapes(canvas.getGraphicsContext2D());
                 }
             }
         });
@@ -290,7 +301,6 @@ public class mainViewController {
         nameField.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //TODO: MAKE SURE IT IS A NUMBER!!!
                 drawingName = nameField.getText();
             }
         });
